@@ -68,7 +68,7 @@ static  void  OS_InitTaskIdle(void);
 static  void  OS_InitTaskStat(void);
 static  void  OS_InitTCBList(void);
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -84,9 +84,10 @@ static  void  OS_InitTCBList(void);
 
 void  OSInit (void)
 {
-#if OS_VERSION >= 204
-    OSInitHookBegin();                                           /* Call port specific initialization code   */
-#endif
+//#if OS_VERSION >= 204
+//    OSInitHookBegin();                                           /* Call port specific initialization code   */
+//#endif
+//OS_VERSION 252
 
     OS_InitMisc();                                               /* Initialize miscellaneous variables       */
 
@@ -115,7 +116,7 @@ void  OSInit (void)
     OSInitHookEnd();                                             /* Call port specific init. code            */
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              ENTER ISR
@@ -149,7 +150,7 @@ void  OSIntEnter (void)
         }
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                               EXIT ISR
@@ -171,9 +172,9 @@ void  OSIntEnter (void)
 
 void  OSIntExit (void)
 {
-#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
+//#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
     OS_CPU_SR  cpu_sr;
-#endif
+//#endif
     
     
     if (OSRunning == TRUE) {
@@ -193,7 +194,7 @@ void  OSIntExit (void)
         OS_EXIT_CRITICAL();
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          PREVENT SCHEDULING
@@ -213,9 +214,9 @@ void  OSIntExit (void)
 #if OS_SCHED_LOCK_EN > 0
 void  OSSchedLock (void)
 {
-#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
+//#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     
     
     if (OSRunning == TRUE) {                     /* Make sure multitasking is running                  */
@@ -228,7 +229,7 @@ void  OSSchedLock (void)
 }
 #endif    
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          ENABLE SCHEDULING
@@ -247,9 +248,9 @@ void  OSSchedLock (void)
 #if OS_SCHED_LOCK_EN > 0
 void  OSSchedUnlock (void)
 {
-#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
+//#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     
     
     if (OSRunning == TRUE) {                                   /* Make sure multitasking is running    */
@@ -269,7 +270,7 @@ void  OSSchedUnlock (void)
 }
 #endif    
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          START MULTITASKING
@@ -306,7 +307,7 @@ void  OSStart (void)
         OSStartHighRdy();                            /* Execute target specific code to start task     */
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        STATISTICS INITIALIZATION
@@ -330,9 +331,9 @@ void  OSStart (void)
 #if OS_TASK_STAT_EN > 0
 void  OSStatInit (void)
 {
-#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
+//#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     
     
     OSTimeDly(2);                                /* Synchronize with clock tick                        */
@@ -346,7 +347,7 @@ void  OSStatInit (void)
     OS_EXIT_CRITICAL();
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         PROCESS SYSTEM TICK
@@ -363,9 +364,9 @@ void  OSStatInit (void)
 
 void  OSTimeTick (void)
 {
-#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
+//#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     OS_TCB    *ptcb;
 
 
@@ -394,7 +395,7 @@ void  OSTimeTick (void)
         }
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             GET VERSION
@@ -414,7 +415,7 @@ INT16U  OSVersion (void)
     return (OS_VERSION);
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            DUMMY FUNCTION
@@ -433,7 +434,7 @@ void  OS_Dummy (void)
 }
 #endif
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                             MAKE TASK READY TO RUN BASED ON EVENT OCCURING
@@ -490,7 +491,7 @@ INT8U  OS_EventTaskRdy (OS_EVENT *pevent, void *msg, INT8U msk)
     return (prio);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                   MAKE TASK WAIT FOR EVENT TO OCCUR
@@ -516,7 +517,7 @@ void  OS_EventTaskWait (OS_EVENT *pevent)
     pevent->OSEventGrp                   |= OSTCBCur->OSTCBBitY;
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                              MAKE TASK READY TO RUN BASED ON EVENT TIMEOUT
@@ -541,7 +542,7 @@ void  OS_EventTO (OS_EVENT *pevent)
     OSTCBCur->OSTCBEventPtr = (OS_EVENT *)0;     /* No longer waiting for event                        */
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                 INITIALIZE EVENT CONTROL BLOCK'S WAIT LIST
@@ -597,7 +598,7 @@ void  OS_EventWaitListInit (OS_EVENT *pevent)
 #endif
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -638,7 +639,7 @@ static  void  OS_InitEventList (void)
 #endif
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -674,7 +675,7 @@ static  void  OS_InitMisc (void)
     OSStatRdy     = FALSE;                                       /* Statistic task is not ready              */
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -707,7 +708,7 @@ static  void  OS_InitRdyList (void)
     OSTCBCur      = (OS_TCB *)0;
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -759,7 +760,7 @@ static  void  OS_InitTaskIdle (void)
     #endif
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -813,7 +814,7 @@ static  void  OS_InitTaskStat (void)
 #endif
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -848,7 +849,7 @@ static  void  OS_InitTCBList (void)
     ptcb1->OSTCBNext = (OS_TCB *)0;                              /* Last OS_TCB                              */
     OSTCBFreeList    = &OSTCBTbl[0];
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              SCHEDULER
@@ -868,9 +869,9 @@ static  void  OS_InitTCBList (void)
 
 void  OS_Sched (void)
 {
-#if OS_CRITICAL_METHOD == 3                            /* Allocate storage for CPU status register     */
+//#if OS_CRITICAL_METHOD == 3                            /* Allocate storage for CPU status register     */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     INT8U      y;
 
 
@@ -886,7 +887,7 @@ void  OS_Sched (void)
     }
     OS_EXIT_CRITICAL();
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              IDLE TASK
@@ -910,12 +911,12 @@ void  OS_Sched (void)
 
 void  OS_TaskIdle (void *pdata)
 {
-#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
+//#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     
     
-    pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
+    //pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
     for (;;) {
         OS_ENTER_CRITICAL();
         OSIdleCtr++;
@@ -923,7 +924,7 @@ void  OS_TaskIdle (void *pdata)
         OSTaskIdleHook();                        /* Call user definable HOOK                           */
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            STATISTICS TASK
@@ -953,15 +954,15 @@ void  OS_TaskIdle (void *pdata)
 #if OS_TASK_STAT_EN > 0
 void  OS_TaskStat (void *pdata)
 {
-#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
+//#if OS_CRITICAL_METHOD == 3                      /* Allocate storage for CPU status register           */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     INT32U     run;
     INT32U     max;
     INT8S      usage;
 
 
-    pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
+    //pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
     while (OSStatRdy == FALSE) {
         OSTimeDly(2 * OS_TICKS_PER_SEC);         /* Wait until statistic task is ready                 */
     }
@@ -988,7 +989,7 @@ void  OS_TaskStat (void *pdata)
     }
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            INITIALIZE TCB
@@ -1034,9 +1035,9 @@ void  OS_TaskStat (void *pdata)
 
 INT8U  OS_TCBInit (INT8U prio, OS_STK *ptos, OS_STK *pbos, INT16U id, INT32U stk_size, void *pext, INT16U opt)
 {
-#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
+//#if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
     OS_CPU_SR  cpu_sr;
-#endif    
+//#endif
     OS_TCB    *ptcb;
 
 

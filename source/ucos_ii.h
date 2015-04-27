@@ -17,8 +17,8 @@
 *********************************************************************************************************
 */
 
-#include "os_cpu.h"
-#include "os_cfg.h"
+//#include "os_cpu.h"
+//#include "os_cfg.h"
 
 #define  OS_VERSION              252                    /* Version of uC/OS-II (Vx.yy mult. by 100)    */
 

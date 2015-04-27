@@ -77,8 +77,8 @@
 
 
 
-        RSEG CODE:CODE:NOROOT(2)
-        CODE32
+        //RSEG CODE:CODE:NOROOT(2)
+        //CODE32
 
 OS_CPU_SR_Save:
         MRS     R0,CPSR                     // Set IRQ and FIQ bits in CPSR to disable all interrupts
@@ -106,8 +106,8 @@ OS_CPU_SR_Restore:
               c) Switch to the highest priority task.
 */
 
-        RSEG CODE:CODE:NOROOT(2)
-        CODE32
+        //RSEG CODE:CODE:NOROOT(2)
+        //CODE32
 
 OSStartHighRdy:
 
@@ -163,8 +163,8 @@ OSStartHighRdy:
               OSTCBHighRdy  points to the OS_TCB of the task to resume
 */
 
-        RSEG CODE:CODE:NOROOT(2)
-        CODE32
+        //RSEG CODE:CODE:NOROOT(2)
+        //CODE32
 
 OSCtxSw:
                                         // SAVE CURRENT TASK'S CONTEXT
@@ -242,8 +242,8 @@ OSCtxSw:
               OSTCBHighRdy  points to the OS_TCB of the task to resume
 */
 
-        RSEG CODE:CODE:NOROOT(2)
-        CODE32
+        //RSEG CODE:CODE:NOROOT(2)
+        //CODE32
 
 OSIntCtxSw:
         BL      OSTaskSwHook            // OSTaskSwHook();
@@ -284,8 +284,8 @@ OSIntCtxSw:
                                       IRQ Interrupt Service Routine
 */
 
-        RSEG CODE:CODE:NOROOT(2)
-        CODE32
+        //RSEG CODE:CODE:NOROOT(2)
+        //CODE32
 
 OS_CPU_IRQ_ISR:
                                         
@@ -372,8 +372,8 @@ OS_CPU_IRQ_ISR_1:
                                       FIQ Interrupt Service Routine
 */
 
-        RSEG CODE:CODE:NOROOT(2)
-        CODE32
+        //RSEG CODE:CODE:NOROOT(2)
+        //CODE32
 
 OS_CPU_FIQ_ISR:
                                         
@@ -435,21 +435,21 @@ OS_CPU_FIQ_ISR_1:
              
 OS_IntNesting:
         //DC32    OSIntNesting
-        DWORD    OSIntNesting
+        //DWORD    OSIntNesting
 
 OS_PrioCur:
-        DC32    OSPrioCur
+        //DC32    OSPrioCur
 
 OS_PrioHighRdy:
-        DC32    OSPrioHighRdy
+        //DC32    OSPrioHighRdy
 
 OS_Running:
-        DC32    OSRunning
+        //DC32    OSRunning
 
 OS_TCBCur:
-        DC32    OSTCBCur
+        //DC32    OSTCBCur
 
 OS_TCBHighRdy:
-        DC32    OSTCBHighRdy
+        //DC32    OSTCBHighRdy
 
         .END
