@@ -13,31 +13,31 @@
  By      : Jean J. Labrosse
 */
 
-            EXTERN  OSRunning                    ; External references
-            EXTERN  OSPrioCur
-            EXTERN  OSPrioHighRdy
-            EXTERN  OSTCBCur
-            EXTERN  OSTCBHighRdy
-            EXTERN  OSIntNesting
-            EXTERN  OSIntExit
-            EXTERN  OSTaskSwHook
-            EXTERN  OS_CPU_IRQ_ISR_Handler
-            EXTERN  OS_CPU_FIQ_ISR_Handler
+            .extern  OSRunning                    // External references
+            .extern  OSPrioCur
+            .extern  OSPrioHighRdy
+            .extern  OSTCBCur
+            .extern  OSTCBHighRdy
+            .extern  OSIntNesting
+            .extern  OSIntExit
+            .extern  OSTaskSwHook
+            .extern  OS_CPU_IRQ_ISR_Handler
+            .extern  OS_CPU_FIQ_ISR_Handler
 
 
-            PUBLIC  OS_CPU_SR_Save               ; Functions declared in this file
-            PUBLIC  OS_CPU_SR_Restore
-            PUBLIC  OSStartHighRdy               
-            PUBLIC  OSCtxSw
-            PUBLIC  OSIntCtxSw
-            PUBLIC  OS_CPU_IRQ_ISR
-            PUBLIC  OS_CPU_FIQ_ISR
+            .globl  OS_CPU_SR_Save               // Functions declared in this file
+            .globl  OS_CPU_SR_Restore
+            .globl  OSStartHighRdy
+            .globl  OSCtxSw
+            .globl  OSIntCtxSw
+            .globl  OS_CPU_IRQ_ISR
+            .globl  OS_CPU_FIQ_ISR
 
 
-NO_INT      EQU     0xC0                         ; Mask used to disable interrupts (Both FIR and IRQ)
-SYS32_MODE  EQU     0x1F
-FIQ32_MODE  EQU     0x11
-IRQ32_MODE  EQU     0x12
+			.equ	NO_INT,           0xC0                         // Mask used to disable interrupts (Both FIR and IRQ)
+			.equ	SYS32_MODE,       0x1F
+			.equ	FIQ32_MODE,       0x11
+			.equ	IRQ32_MODE,       0x12
 
 
 
@@ -76,10 +76,11 @@ IRQ32_MODE  EQU     0x12
 //                    "Disabling Interrupts at Processor Level"
 
 
+
         RSEG CODE:CODE:NOROOT(2)
         CODE32
 
-OS_CPU_SR_Save
+OS_CPU_SR_Save:
         MRS     R0,CPSR                     // Set IRQ and FIQ bits in CPSR to disable all interrupts
         ORR     R1,R0,#NO_INT
         MSR     CPSR_c,R1
@@ -90,7 +91,7 @@ OS_CPU_SR_Save
         MOV     PC,LR                       // Disabled, return the original CPSR contents in R0
 
 
-OS_CPU_SR_Restore
+OS_CPU_SR_Restore:
         MSR     CPSR_c,R0
         MOV     PC,LR
 
@@ -108,18 +109,18 @@ OS_CPU_SR_Restore
         RSEG CODE:CODE:NOROOT(2)
         CODE32
 
-OSStartHighRdy  
+OSStartHighRdy:
 
         MSR     CPSR_cxsf, #0xDF        // Switch to SYS mode with IRQ and FIQ disabled
         
         BL      OSTaskSwHook            // OSTaskSwHook();
 
-        LDR     R4, ??OS_Running        // OSRunning = TRUE
+        LDR     R4, =OS_Running        // OSRunning = TRUE
         MOV     R5, #1
         STRB    R5, [R4]
 
                                         // SWITCH TO HIGHEST PRIORITY TASK
-        LDR     R4, ??OS_TCBHighRdy     //    Get highest priority task TCB address
+        LDR     R4, =OS_TCBHighRdy     //    Get highest priority task TCB address
         LDR     R4, [R4]                //    get stack pointer
         LDR     SP, [R4]                //    switch to the new stack
 
@@ -165,7 +166,7 @@ OSStartHighRdy
         RSEG CODE:CODE:NOROOT(2)
         CODE32
 
-OSCtxSw
+OSCtxSw:
                                         // SAVE CURRENT TASK'S CONTEXT
         STR     LR,  [SP, #-4]!         //     Return address
         STR     LR,  [SP, #-4]!
@@ -185,19 +186,19 @@ OSCtxSw
         MRS     R4,  CPSR               //    push current CPSR
         STR     R4,  [SP, #-4]!
         
-        LDR     R4, ??OS_TCBCur         // OSTCBCur->OSTCBStkPtr = SP;
+        LDR     R4, =OS_TCBCur         // OSTCBCur->OSTCBStkPtr = SP;
         LDR     R5, [R4]
         STR     SP, [R5]
 
         BL      OSTaskSwHook            // OSTaskSwHook();
 
-        LDR     R4, ??OS_PrioCur        // OSPrioCur = OSPrioHighRdy
-        LDR     R5, ??OS_PrioHighRdy
+        LDR     R4, =OS_PrioCur        // OSPrioCur = OSPrioHighRdy
+        LDR     R5, =OS_PrioHighRdy
         LDRB    R6, [R5]
         STRB    R6, [R4]
         
-        LDR     R4, ??OS_TCBCur         // OSTCBCur  = OSTCBHighRdy;
-        LDR     R6, ??OS_TCBHighRdy
+        LDR     R4, =OS_TCBCur         // OSTCBCur  = OSTCBHighRdy;
+        LDR     R6, =OS_TCBHighRdy
         LDR     R6, [R6]
         STR     R6, [R4]
 
@@ -244,16 +245,16 @@ OSCtxSw
         RSEG CODE:CODE:NOROOT(2)
         CODE32
 
-OSIntCtxSw
+OSIntCtxSw:
         BL      OSTaskSwHook            // OSTaskSwHook();
 
-        LDR     R4,??OS_PrioCur         // OSPrioCur = OSPrioHighRdy
-        LDR     R5,??OS_PrioHighRdy
+        LDR     R4,=OS_PrioCur         // OSPrioCur = OSPrioHighRdy
+        LDR     R5,=OS_PrioHighRdy
         LDRB    R6,[R5]
         STRB    R6,[R4]
         
-        LDR     R4,??OS_TCBCur          // OSTCBCur  = OSTCBHighRdy;
-        LDR     R6,??OS_TCBHighRdy
+        LDR     R4,=OS_TCBCur          // OSTCBCur  = OSTCBHighRdy;
+        LDR     R6,=OS_TCBHighRdy
         LDR     R6,[R6]
         STR     R6,[R4]
 
@@ -286,7 +287,7 @@ OSIntCtxSw
         RSEG CODE:CODE:NOROOT(2)
         CODE32
 
-OS_CPU_IRQ_ISR
+OS_CPU_IRQ_ISR:
                                         
         STR     R3,  [SP, #-4]!                // PUSH WORKING REGISTERS ONTO IRQ STACK
         STR     R2,  [SP, #-4]!
@@ -326,7 +327,7 @@ OS_CPU_IRQ_ISR
         STR     R3,  [SP, #-4]!                //    Push task's CPSR (i.e. IRQ's SPSR)
                 
                                                // HANDLE NESTING COUNTER
-        LDR     R0, ??OS_IntNesting            // OSIntNesting++;
+        LDR     R0, =OS_IntNesting            // OSIntNesting++;
         LDRB    R1, [R0]
         ADD     R1, R1,#1
         STRB    R1, [R0]
@@ -334,11 +335,11 @@ OS_CPU_IRQ_ISR
         CMP     R1, #1                         // if (OSIntNesting == 1) {
         BNE     OS_CPU_IRQ_ISR_1
 
-        LDR     R4, ??OS_TCBCur                //     OSTCBCur->OSTCBStkPtr = SP
+        LDR     R4, =OS_TCBCur                //     OSTCBCur->OSTCBStkPtr = SP
         LDR     R5, [R4]
         STR     SP, [R5]                       // }
 
-OS_CPU_IRQ_ISR_1
+OS_CPU_IRQ_ISR_1:
         MSR     CPSR_c, #(NO_INT | IRQ32_MODE) // Change to IRQ mode (to use the IRQ stack to handle interrupt)
         
         BL      OS_CPU_IRQ_ISR_Handler         // OS_CPU_IRQ_ISR_Handler();
@@ -374,7 +375,7 @@ OS_CPU_IRQ_ISR_1
         RSEG CODE:CODE:NOROOT(2)
         CODE32
 
-OS_CPU_FIQ_ISR
+OS_CPU_FIQ_ISR:
                                         
         STMFD   SP!,{R1-R3}                   // PUSH WORKING REGISTERS ONTO IRQ STACK
         
@@ -398,7 +399,7 @@ OS_CPU_FIQ_ISR
         STMFD   SP!,{R3}                      //    Push task's CPSR (i.e. IRQ's SPSR)
         
                                               // HANDLE NESTING COUNTER
-        LDR     R0,??OS_IntNesting            // OSIntNesting++;
+        LDR     R0,=OS_IntNesting            // OSIntNesting++;
         LDRB    R1,[R0]
         ADD     R1,R1,#1
         STRB    R1,[R0]
@@ -406,11 +407,11 @@ OS_CPU_FIQ_ISR
         CMP     R1,#1                         // if (OSIntNesting == 1) {
         BNE     OS_CPU_FIQ_ISR_1
 
-        LDR     R4,??OS_TCBCur                //     OSTCBCur->OSTCBStkPtr = SP
+        LDR     R4,=OS_TCBCur                //     OSTCBCur->OSTCBStkPtr = SP
         LDR     R5,[R4]
         STR     SP,[R5]                       // }
 
-OS_CPU_FIQ_ISR_1
+OS_CPU_FIQ_ISR_1:
         MSR     CPSR_c,#(NO_INT | FIQ32_MODE) // Change to FIQ mode (to use the FIQ stack to handle interrupt)
         
         BL      OS_CPU_FIQ_ISR_Handler        // OS_CPU_FIQ_ISR_Handler();
@@ -427,26 +428,28 @@ OS_CPU_FIQ_ISR_1
 
 /*
                                      POINTERS TO VARIABLES
+                                     DC32 : Generates 32-bit constants
 */
 
-        DATA
+        .DATA
              
-??OS_IntNesting:
-        DC32    OSIntNesting
+OS_IntNesting:
+        //DC32    OSIntNesting
+        DWORD    OSIntNesting
 
-??OS_PrioCur:
+OS_PrioCur:
         DC32    OSPrioCur
 
-??OS_PrioHighRdy:
+OS_PrioHighRdy:
         DC32    OSPrioHighRdy
 
-??OS_Running:
+OS_Running:
         DC32    OSRunning
 
-??OS_TCBCur:
+OS_TCBCur:
         DC32    OSTCBCur
 
-??OS_TCBHighRdy:
+OS_TCBHighRdy:
         DC32    OSTCBHighRdy
 
-        END
+        .END
