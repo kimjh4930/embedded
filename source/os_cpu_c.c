@@ -16,7 +16,7 @@
 */
 
 #define  OS_CPU_GLOBALS
-#include <ucos_ii.h>
+#include "ucos_ii.h"
 
 #if      OS_VIEW_MODULE > 0
 #include <OS_VIEWc.H>
@@ -174,7 +174,7 @@ OS_STK *OSTaskStkInit (void (*task)(void *pd), void *p_arg, OS_STK *ptos, INT16U
     OS_STK *stk;
 
 
-    opt      = opt;                         /* 'opt' is not used, prevent warning                      */
+    //opt      = opt;                         /* 'opt' is not used, prevent warning                      */
     stk      = ptos;                        /* Load stack pointer                                      */
     *(stk)   = (OS_STK)task;                /* Entry Point                                             */
     *(--stk) = (INT32U)0x14141414L;         /* R14 (LR)                                                */
