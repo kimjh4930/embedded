@@ -13,7 +13,7 @@
 */
 
 #ifndef  OS_MASTER_FILE
-#include "INCLUDES.H"
+#include "includes.h"
 #endif
 
 #if (OS_VERSION >= 251) && (OS_FLAG_EN > 0) && (OS_MAX_FLAGS > 0)
@@ -25,8 +25,18 @@
 
 static  void     OS_FlagBlock(OS_FLAG_GRP *pgrp, OS_FLAG_NODE *pnode, OS_FLAGS flags, INT8U wait_type, INT16U timeout);
 static  BOOLEAN  OS_FlagTaskRdy(OS_FLAG_NODE *pnode, OS_FLAGS flags_rdy);
+//#if (OS_VERSION >= 251) && (OS_FLAG_EN > 0) && (OS_MAX_FLAGS > 0)
+void          OS_FlagInit(void);
+void          OS_FlagUnlink(OS_FLAG_NODE *pnode);
+//#endif
+OS_FLAGS      OSFlagAccept(OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT8U *err);
+OS_FLAG_GRP  *OSFlagCreate(OS_FLAGS flags, INT8U *err);
+OS_FLAG_GRP  *OSFlagDel(OS_FLAG_GRP *pgrp, INT8U opt, INT8U *err);
+OS_FLAGS      OSFlagPend(OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT16U timeout, INT8U *err);
+OS_FLAGS      OSFlagPost(OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U operation, INT8U *err);
+OS_FLAGS      OSFlagQuery(OS_FLAG_GRP *pgrp, INT8U *err);
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                              CHECK THE STATUS OF FLAGS IN AN EVENT FLAG GROUP
@@ -75,7 +85,7 @@ static  BOOLEAN  OS_FlagTaskRdy(OS_FLAG_NODE *pnode, OS_FLAGS flags_rdy);
 */
 
 #if OS_FLAG_ACCEPT_EN > 0
-OS_FLAGS  OSFlagAccept (OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT8U *err)
+OS_FLAGS      OSFlagAccept(OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT8U *err)
 {
 #if OS_CRITICAL_METHOD == 3                                /* Allocate storage for CPU status register */
     OS_CPU_SR     cpu_sr;
@@ -101,7 +111,7 @@ OS_FLAGS  OSFlagAccept (OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT8
     } else {
         consume    = FALSE;
     }
-/*$PAGE*/
+/*$PAGE*/
     *err = OS_NO_ERR;                                      /* Assume NO error until proven otherwise.  */
     OS_ENTER_CRITICAL();
     switch (wait_type) {
@@ -169,7 +179,7 @@ OS_FLAGS  OSFlagAccept (OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT8
 }
 #endif
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                           CREATE AN EVENT FLAG
@@ -219,7 +229,7 @@ OS_FLAG_GRP  *OSFlagCreate (OS_FLAGS flags, INT8U *err)
     return (pgrp);                                  /* Return pointer to event flag group              */
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                     DELETE AN EVENT FLAG GROUP
@@ -324,7 +334,7 @@ OS_FLAG_GRP  *OSFlagDel (OS_FLAG_GRP *pgrp, INT8U opt, INT8U *err)
     }
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        WAIT ON AN EVENT FLAG GROUP
@@ -405,7 +415,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT16U
     } else {
         consume    = FALSE;
     }
-/*$PAGE*/
+/*$PAGE*/
     OS_ENTER_CRITICAL();
     switch (wait_type) {
         case OS_FLAG_WAIT_SET_ALL:                         /* See if all required flags are set        */
@@ -510,7 +520,7 @@ OS_FLAGS  OSFlagPend (OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U wait_type, INT16U
     }
     return (flags_cur);
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         POST EVENT FLAG BIT(S)
@@ -573,7 +583,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U opt, INT8U *err)
         return ((OS_FLAGS)0);
     }
 #endif
-/*$PAGE*/
+/*$PAGE*/
     OS_ENTER_CRITICAL();
     switch (opt) {
         case OS_FLAG_CLR:
@@ -643,7 +653,7 @@ OS_FLAGS  OSFlagPost (OS_FLAG_GRP *pgrp, OS_FLAGS flags, INT8U opt, INT8U *err)
     *err      = OS_NO_ERR;
     return (flags_cur);
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                           QUERY EVENT FLAG
@@ -690,7 +700,7 @@ OS_FLAGS  OSFlagQuery (OS_FLAG_GRP *pgrp, INT8U *err)
 }
 #endif
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                         SUSPEND TASK UNTIL EVENT FLAG(s) RECEIVED OR TIMEOUT OCCURS
@@ -755,7 +765,7 @@ static  void  OS_FlagBlock (OS_FLAG_GRP *pgrp, OS_FLAG_NODE *pnode, OS_FLAGS fla
     }
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                    INITIALIZE THE EVENT FLAG MODULE
@@ -798,7 +808,7 @@ void  OS_FlagInit (void)
 #endif
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                              MAKE TASK READY-TO-RUN, EVENT(s) OCCURRED
@@ -842,7 +852,7 @@ static  BOOLEAN  OS_FlagTaskRdy (OS_FLAG_NODE *pnode, OS_FLAGS flags_rdy)
     return (sched);
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                  UNLINK EVENT FLAG NODE FROM WAITING LIST

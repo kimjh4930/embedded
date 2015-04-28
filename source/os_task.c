@@ -16,6 +16,23 @@
 #include "includes.h"
 #endif
 
+INT8U         OSTaskChangePrio(INT8U oldprio, INT8U newprio);
+INT8U         OSTaskCreate(void (*task)(void *pd), void *pdata, OS_STK *ptos, INT8U prio);
+INT8U         OSTaskCreateExt(void  (*task)(void *pd),
+                              void   *pdata,
+                              OS_STK *ptos,
+                              INT8U   prio,
+                              INT16U  id,
+                              OS_STK *pbos,
+                              INT32U  stk_size,
+                              void   *pext,
+                              INT16U  opt);
+INT8U         OSTaskDel(INT8U prio);
+INT8U         OSTaskDelReq(INT8U prio);
+INT8U         OSTaskResume(INT8U prio);
+INT8U         OSTaskSuspend(INT8U prio);
+INT8U         OSTaskStkChk(INT8U prio, OS_STK_DATA *pdata);
+INT8U         OSTaskQuery(INT8U prio, OS_TCB *pdata);
 /*
 *********************************************************************************************************
 *                                        CHANGE PRIORITY OF A TASK
@@ -114,7 +131,7 @@ INT8U  OSTaskChangePrio (INT8U oldprio, INT8U newprio)
     }
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            CREATE A TASK
@@ -194,7 +211,7 @@ INT8U  OSTaskCreate (void (*task)(void *pd), void *pdata, OS_STK *ptos, INT8U pr
     return (OS_PRIO_EXIST);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                     CREATE A TASK (Extended Version)
@@ -258,7 +275,7 @@ INT8U  OSTaskCreate (void (*task)(void *pd), void *pdata, OS_STK *ptos, INT8U pr
 *                               (i.e. > OS_LOWEST_PRIO)
 *********************************************************************************************************
 */
-/*$PAGE*/
+/*$PAGE*/
 #if OS_TASK_CREATE_EXT_EN > 0
 INT8U  OSTaskCreateExt (void   (*task)(void *pd),
                         void    *pdata,
@@ -317,7 +334,7 @@ INT8U  OSTaskCreateExt (void   (*task)(void *pd),
     return (OS_PRIO_EXIST);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            DELETE A TASK
@@ -352,7 +369,7 @@ INT8U  OSTaskCreateExt (void   (*task)(void *pd),
 *                 being deleted.  The rest of the deletion would thus be able to be completed.
 *********************************************************************************************************
 */
-/*$PAGE*/
+/*$PAGE*/
 #if OS_TASK_DEL_EN > 0
 INT8U  OSTaskDel (INT8U prio)
 {
@@ -436,7 +453,7 @@ INT8U  OSTaskDel (INT8U prio)
     return (OS_TASK_DEL_ERR);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                    REQUEST THAT A TASK DELETE ITSELF
@@ -481,7 +498,7 @@ INT8U  OSTaskDel (INT8U prio)
 *                                 deleted.
 *********************************************************************************************************
 */
-/*$PAGE*/
+/*$PAGE*/
 #if OS_TASK_DEL_EN > 0
 INT8U  OSTaskDelReq (INT8U prio)
 {
@@ -519,7 +536,7 @@ INT8U  OSTaskDelReq (INT8U prio)
     return (err);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        RESUME A SUSPENDED TASK
@@ -573,7 +590,7 @@ INT8U  OSTaskResume (INT8U prio)
     return (OS_TASK_NOT_SUSPENDED);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             STACK CHECKING
@@ -642,7 +659,7 @@ INT8U  OSTaskStkChk (INT8U prio, OS_STK_DATA *pdata)
     return (OS_NO_ERR);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            SUSPEND A TASK
@@ -708,7 +725,7 @@ INT8U  OSTaskSuspend (INT8U prio)
     return (OS_NO_ERR);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            QUERY A TASK

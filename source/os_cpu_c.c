@@ -16,7 +16,8 @@
 */
 
 #define  OS_CPU_GLOBALS
-#include <ucos_ii.h>
+#include "includes.h"
+#include "ucos_ii.h"
 
 #if      OS_VIEW_MODULE > 0
 #include <OS_VIEWc.H>
@@ -24,6 +25,10 @@
 #endif
 
 #define  ARM_SYS_MODE   (0x0000001FL)
+
+void          OSTaskCreateHook(OS_TCB *ptcb);
+void          OSTaskDelHook(OS_TCB *ptcb);
+void          OSTCBInitHook(OS_TCB *ptcb);
 
 /*
 *********************************************************************************************************
@@ -75,7 +80,7 @@ void  OSInitHookEnd (void)
 * Note(s)    : 1) Interrupts are disabled during this call.
 *********************************************************************************************************
 */
-#if OS_CPU_HOOKS_EN > 0 
+#if OS_CPU_HOOKS_EN > 0
 void  OSTaskCreateHook (OS_TCB *ptcb)
 {
 #if OS_VIEW_MODULE > 0
@@ -174,7 +179,7 @@ OS_STK *OSTaskStkInit (void (*task)(void *pd), void *p_arg, OS_STK *ptos, INT16U
     OS_STK *stk;
 
 
-    opt      = opt;                         /* 'opt' is not used, prevent warning                      */
+    //opt      = opt;                         /* 'opt' is not used, prevent warning                      */
     stk      = ptos;                        /* Load stack pointer                                      */
     *(stk)   = (OS_STK)task;                /* Entry Point                                             */
     *(--stk) = (INT32U)0x14141414L;         /* R14 (LR)                                                */
@@ -259,7 +264,7 @@ void  OSTimeTickHook (void)
 }
 #endif
 
-
+
 /*
 *********************************************************************************************************
 *                             INTERRUPT DISABLE TIME MEASUREMENT, START

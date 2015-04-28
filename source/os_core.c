@@ -12,10 +12,38 @@
 *********************************************************************************************************
 */
 
-#ifndef  OS_MASTER_FILE
-#define  OS_GLOBALS
+//#ifndef  OS_MASTER_FILE
+//#define  OS_GLOBALS
 #include "includes.h"
+//#endif
+
+
+void          OSInit(void);
+void          OSIntEnter(void);
+void          OSIntExit(void);
+void          OSSchedLock(void);
+void          OSSchedUnlock(void);
+void          OSStart(void);
+void          OSStatInit(void);
+INT16U        OSVersion(void);
+
+#if ((OS_Q_EN > 0) && (OS_MAX_QS > 0)) || (OS_MBOX_EN > 0) || (OS_SEM_EN > 0) || (OS_MUTEX_EN > 0)
+INT8U         OS_EventTaskRdy(OS_EVENT *pevent, void *msg, INT8U msk);
+void          OS_EventTaskWait(OS_EVENT *pevent);
+void          OS_EventTO(OS_EVENT *pevent);
+void          OS_EventWaitListInit(OS_EVENT *pevent);
 #endif
+
+void          OS_FlagInit(void);
+void          OS_FlagUnlink(OS_FLAG_NODE *pnode);
+
+void          OS_MemInit(void);
+void          OS_QInit(void);
+void          OS_Sched(void);
+void          OS_TaskIdle(void *data);
+void          OS_TaskStat(void *data);
+
+INT8U         OS_TCBInit(INT8U prio, OS_STK *ptos, OS_STK *pbos, INT16U id, INT32U stk_size, void *pext, INT16U opt);
 
 /*
 *********************************************************************************************************
@@ -68,7 +96,7 @@ static  void  OS_InitTaskIdle(void);
 static  void  OS_InitTaskStat(void);
 static  void  OS_InitTCBList(void);
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -84,9 +112,9 @@ static  void  OS_InitTCBList(void);
 
 void  OSInit (void)
 {
-#if OS_VERSION >= 204
+//#if OS_VERSION >= 204
     OSInitHookBegin();                                           /* Call port specific initialization code   */
-#endif
+//#endif
 
     OS_InitMisc();                                               /* Initialize miscellaneous variables       */
 
@@ -115,7 +143,7 @@ void  OSInit (void)
     OSInitHookEnd();                                             /* Call port specific init. code            */
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              ENTER ISR
@@ -149,7 +177,7 @@ void  OSIntEnter (void)
         }
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                               EXIT ISR
@@ -193,7 +221,7 @@ void  OSIntExit (void)
         OS_EXIT_CRITICAL();
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          PREVENT SCHEDULING
@@ -228,7 +256,7 @@ void  OSSchedLock (void)
 }
 #endif    
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          ENABLE SCHEDULING
@@ -269,7 +297,7 @@ void  OSSchedUnlock (void)
 }
 #endif    
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          START MULTITASKING
@@ -306,7 +334,7 @@ void  OSStart (void)
         OSStartHighRdy();                            /* Execute target specific code to start task     */
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        STATISTICS INITIALIZATION
@@ -346,7 +374,7 @@ void  OSStatInit (void)
     OS_EXIT_CRITICAL();
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         PROCESS SYSTEM TICK
@@ -394,7 +422,7 @@ void  OSTimeTick (void)
         }
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             GET VERSION
@@ -414,7 +442,7 @@ INT16U  OSVersion (void)
     return (OS_VERSION);
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            DUMMY FUNCTION
@@ -433,7 +461,7 @@ void  OS_Dummy (void)
 }
 #endif
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                             MAKE TASK READY TO RUN BASED ON EVENT OCCURING
@@ -490,7 +518,7 @@ INT8U  OS_EventTaskRdy (OS_EVENT *pevent, void *msg, INT8U msk)
     return (prio);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                   MAKE TASK WAIT FOR EVENT TO OCCUR
@@ -516,7 +544,7 @@ void  OS_EventTaskWait (OS_EVENT *pevent)
     pevent->OSEventGrp                   |= OSTCBCur->OSTCBBitY;
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                              MAKE TASK READY TO RUN BASED ON EVENT TIMEOUT
@@ -541,7 +569,7 @@ void  OS_EventTO (OS_EVENT *pevent)
     OSTCBCur->OSTCBEventPtr = (OS_EVENT *)0;     /* No longer waiting for event                        */
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                 INITIALIZE EVENT CONTROL BLOCK'S WAIT LIST
@@ -597,7 +625,7 @@ void  OS_EventWaitListInit (OS_EVENT *pevent)
 #endif
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -638,7 +666,7 @@ static  void  OS_InitEventList (void)
 #endif
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -674,7 +702,7 @@ static  void  OS_InitMisc (void)
     OSStatRdy     = FALSE;                                       /* Statistic task is not ready              */
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -707,18 +735,18 @@ static  void  OS_InitRdyList (void)
     OSTCBCur      = (OS_TCB *)0;
 }
 
-/*$PAGE*/
+/*$PAGE*/
 /*
-*********************************************************************************************************
-*                                             INITIALIZATION
-*                                         CREATING THE IDLE TASK
-*
-* Description: This function creates the Idle Task.
-*
-* Arguments  : none
-*
-* Returns    : none
-*********************************************************************************************************
+
+                                             INITIALIZATION
+                                         CREATING THE IDLE TASK
+
+ Description: This function creates the Idle Task.
+
+ Arguments  : none
+
+ Returns    : none
+
 */
 
 static  void  OS_InitTaskIdle (void)
@@ -759,7 +787,7 @@ static  void  OS_InitTaskIdle (void)
     #endif
 #endif
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -770,7 +798,6 @@ static  void  OS_InitTaskIdle (void)
 * Arguments  : none
 *
 * Returns    : none
-*********************************************************************************************************
 */
 
 #if OS_TASK_STAT_EN > 0
@@ -813,7 +840,7 @@ static  void  OS_InitTaskStat (void)
 #endif
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             INITIALIZATION
@@ -848,7 +875,7 @@ static  void  OS_InitTCBList (void)
     ptcb1->OSTCBNext = (OS_TCB *)0;                              /* Last OS_TCB                              */
     OSTCBFreeList    = &OSTCBTbl[0];
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              SCHEDULER
@@ -886,7 +913,7 @@ void  OS_Sched (void)
     }
     OS_EXIT_CRITICAL();
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              IDLE TASK
@@ -915,7 +942,7 @@ void  OS_TaskIdle (void *pdata)
 #endif    
     
     
-    pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
+    //pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
     for (;;) {
         OS_ENTER_CRITICAL();
         OSIdleCtr++;
@@ -923,7 +950,7 @@ void  OS_TaskIdle (void *pdata)
         OSTaskIdleHook();                        /* Call user definable HOOK                           */
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            STATISTICS TASK
@@ -961,7 +988,7 @@ void  OS_TaskStat (void *pdata)
     INT8S      usage;
 
 
-    pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
+    //pdata = pdata;                               /* Prevent compiler warning for not using 'pdata'     */
     while (OSStatRdy == FALSE) {
         OSTimeDly(2 * OS_TICKS_PER_SEC);         /* Wait until statistic task is ready                 */
     }
@@ -988,7 +1015,7 @@ void  OS_TaskStat (void *pdata)
     }
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            INITIALIZE TCB

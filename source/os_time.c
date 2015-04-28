@@ -16,6 +16,13 @@
 #include "includes.h"
 #endif
 
+void          OSTimeDly(INT16U ticks);
+INT8U         OSTimeDlyHMSM(INT8U hours, INT8U minutes, INT8U seconds, INT16U milli);
+INT8U         OSTimeDlyResume(INT8U prio);
+INT32U        OSTimeGet(void);
+void          OSTimeSet(INT32U ticks);
+void          OSTimeTick(void);
+
 /*
 *********************************************************************************************************
 *                                DELAY TASK 'n' TICKS   (n from 0 to 65535)
@@ -49,7 +56,7 @@ void  OSTimeDly (INT16U ticks)
         OS_Sched();                                                       /* Find next task to run!    */
     }
 }
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                     DELAY TASK FOR SPECIFIED TIME
@@ -109,7 +116,7 @@ INT8U  OSTimeDlyHMSM (INT8U hours, INT8U minutes, INT8U seconds, INT16U milli)
     return (OS_TIME_ZERO_DLY);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         RESUME A DELAYED TASK
@@ -169,7 +176,7 @@ INT8U  OSTimeDlyResume (INT8U prio)
     return (OS_TASK_NOT_EXIST);                            /* The task does not exist                  */
 }
 #endif    
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         GET CURRENT SYSTEM TIME
