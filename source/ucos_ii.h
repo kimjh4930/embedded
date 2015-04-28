@@ -17,8 +17,8 @@
 *********************************************************************************************************
 */
 
-//#include "os_cpu.h"
-//#include "os_cfg.h"
+#include "os_cpu.h"
+#include "os_cfg.h"
 
 #define  OS_VERSION              252                    /* Version of uC/OS-II (Vx.yy mult. by 100)    */
 
@@ -211,7 +211,7 @@
 *********************************************************************************************************
 */
 
-#if (OS_EVENT_EN > 0) && (OS_MAX_EVENTS > 0)
+//#if (OS_EVENT_EN > 0) && (OS_MAX_EVENTS > 0)
 typedef struct {
     INT8U   OSEventType;                   /* Type of event control block (see OS_EVENT_TYPE_???)      */
     INT8U   OSEventGrp;                    /* Group corresponding to tasks waiting for event to occur  */
@@ -219,7 +219,7 @@ typedef struct {
     void   *OSEventPtr;                    /* Pointer to message or queue structure                    */
     INT8U   OSEventTbl[OS_EVENT_TBL_SIZE]; /* List of tasks waiting for event to occur                 */
 } OS_EVENT;
-#endif
+//#endif
 
 
 /*
